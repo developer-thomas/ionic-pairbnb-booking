@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>My Offers</ion-title>
+
+    <ion-buttons slot="end" routerLink="/places/offers/new">
+      <ion-button slot="end">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-menu-button ></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          @for(offer of loadedOffers; track offer.id) {
+            <ion-item-sliding #slidingItem>
+              <ion-item>
+                <ion-thumbnail slot="start">
+                  <img [src]="offer.imageUrl"/>
+                </ion-thumbnail>
+                <ion-label> 
+                  <h2>{{ offer.title }} </h2>
+                  <p> {{ offer.description }} </p>
+                </ion-label>
+                <ion-button fill="clear" [routerLink]="['/places/offers', offer.id]">
+                  <ion-icon name="eye-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+              <ion-item-options>
+                <ion-item-option color="primary" (click)="onEdit(offer.id, slidingItem)">
+                  <ion-icon name="create-outline"></ion-icon>
+                </ion-item-option>
+              </ion-item-options>
+            </ion-item-sliding>
+          }
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
