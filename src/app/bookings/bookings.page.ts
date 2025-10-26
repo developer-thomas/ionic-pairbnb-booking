@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { BookingService } from './booking.service';
 import { Booking } from './models/booking.model';
 import { IonItemSliding } from '@ionic/angular';
+import { AuthService } from '../auth/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-bookings',
@@ -11,19 +13,27 @@ import { IonItemSliding } from '@ionic/angular';
 })
 export class BookingsPage implements OnInit {
 
-  loadedBookings!: Booking[];
+  userBookings$: Observable<Booking[]> = this.bookingService.userBookings;
+
 
   constructor(
     private bookingService: BookingService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
-    this. loadedBookings = this.bookingService.bookings;
+    this.triggerUserBookings()
+  }
+  
+  triggerUserBookings() {
+  
+    this.bookingService.findBookingPerUser(this.authService.userId)
   }
 
   onCancelBooking(bookingId: string, slidingItem: IonItemSliding) {
     slidingItem.close();
-    // Cancel booking
+
+    this.bookingService.removeBooking(bookingId);
   }
 
 }

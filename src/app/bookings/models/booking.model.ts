@@ -3,5 +3,12 @@ export interface Booking {
     placeId: string;
     userId: string;
     placeTitle: string;
-    guestNumber: number;
+    numberOfGuests: number;
+    firstName: string;
+    place: UserPlaceResponse
+}
+
+interface UserPlaceResponse {
+    title: string;
+    price: number
 }

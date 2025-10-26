@@ -11,8 +11,140 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-text-center">
-  <h1>{{ selectedPlace.description }}</h1>
+<ion-content>
+  <ion-grid>
+    <form [formGroup]="form" (ngSubmit)="onBookPlace()">
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item>
+            <ion-input 
+              label="First Name" 
+              labelPlacement="floating" 
+              formControlName="firstName">
+            </ion-input>
+          </ion-item>
 
-  <ion-button (click)="onBookPlace()">Book!</ion-button>
+          @if(form.get('firstName')?.hasError('required') && form.get('firstName')?.touched) {
+            <ion-item lines="none">
+              <ion-text color="danger">
+                <small>First Name should not be empty.</small>
+              </ion-text>
+            </ion-item>
+          }
+
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item>
+            <ion-input 
+              label="Last Name" 
+              labelPlacement="floating" 
+              formControlName="lastName">
+            </ion-input>
+          </ion-item>
+          @if(form.get('lastName')?.hasError('required') && form.get('lastName')?.touched) {
+            <ion-item lines="none">
+              <ion-text color="danger">
+                <small>Last Name should not be empty.</small>
+              </ion-text>
+            </ion-item>
+          }
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-list>
+            <ion-item>
+              <ion-select labelPlacement="floating" label="Number of Guests" interface="popover" formControlName="numberOfGuests">
+                @for(i of [1, 2, 3, 4, 5]; track i) {
+                  <ion-select-option [value]="i">{{ i }}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+          </ion-list>
+
+          @if(form.get('numberOfGuests')?.hasError('required') && form.get('numberOfGuests')?.touched) {
+            <ion-item lines="none">
+              <ion-text color="danger">
+                <small>Number of Guests should not be empty.</small>
+              </ion-text>
+            </ion-item>
+          }
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item button="true" id="from-datepicker" detail="false">
+            <ion-input [value]="form.controls['startDate'].value || startDate | date:'dd/MM/yyyy'" label="From" labelPlacement="floating"></ion-input>
+            <ion-popover trigger="from-datepicker" class="popover-datetime" showBackdrop="false">
+              <ng-template>
+                <ion-datetime
+                  [min]="startDate" 
+                  [max]="endDate"
+                  presentation="date"
+                  formControlName="startDate"
+                >
+              </ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+          @if(form.get('startDate')?.hasError('required') && form.get('startDate')?.touched) {
+            <ion-item lines="none">
+              <ion-text color="danger">
+                <small>Start Date should not be empty.</small>
+              </ion-text>
+            </ion-item>
+          }
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item button="true" id="to-datepicker" detail="false">
+            <ion-input 
+              [value]="form.controls['endDate'].value || endDate | date:'dd/MM/yyyy'" 
+              label="To" 
+              labelPlacement="floating">
+            </ion-input>
+            <ion-popover 
+              trigger="to-datepicker" 
+              class="popover-datetime" 
+              showBackdrop="false">
+
+              <ng-template>
+                <ion-datetime
+                  [min]="form.controls['startDate'].value || startDate" 
+                  [max]="endDate"
+                  presentation="date"
+                  formControlName="endDate"
+                >
+              </ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+          @if(form.get('endDate')?.hasError('required') && form.get('endDate')?.touched) {
+            <ion-item lines="none">
+              <ion-text color="danger">
+                <small>End Date should not be empty.</small>
+              </ion-text>
+            </ion-item>
+          }
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item lines="none">
+            <ion-text>
+              <p><b>Total price: </b> {{ getTotalPrice | currency }}</p>
+            </ion-text>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-button type="submit" expand="block" [disabled]="!form.valid || !datesValid()">Book!</ion-button>
+    </form>
+
+  </ion-grid>
 </ion-content>
