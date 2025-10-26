@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ActionSheetButton, ActionSheetController, ModalController, NavController } from '@ionic/angular';
+import { ActionSheetController, LoadingController, ModalController, NavController } from '@ionic/angular';
 import { PlacesService } from '../../places.service';
 import { Place } from '../../models/places.model';
 import { CreateBookingComponent } from 'src/app/bookings/create-booking/create-booking.component';
+import { BookingService } from 'src/app/bookings/booking.service';
+import { AuthService } from 'src/app/auth/auth.service';
+import { PlacesStore } from '../store/places.store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-place-details',
@@ -12,14 +16,22 @@ import { CreateBookingComponent } from 'src/app/bookings/create-booking/create-b
   standalone: false,
 })
 export class PlaceDetailsPage implements OnInit {
-  place!: Place;
+  isBookable: boolean = true;
+  currentPlace!: Place;
+  selectedMode!: 'select' | 'random';
+  placeId!: number;
+  onePlace$: Observable<Place> = this.placesStore.onePlace$;
   
   constructor(
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
-    private placesService: PlacesService,
     private modalCtrl: ModalController,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private bookingService: BookingService,
+    private placesService: PlacesService,
+    private loadingCtrl: LoadingController,
+    private authService: AuthService,
+    private placesStore: PlacesStore
   ) { }
 
   ngOnInit() {
@@ -29,8 +41,20 @@ export class PlaceDetailsPage implements OnInit {
         return;
       }
 
-      const placeId = paramMap.get('placeId');
-      this.place = this.placesService.getPlace(placeId!);
+      this.placeId = Number(paramMap.get('placeId'));
+      
+      this.placesService.getPlace(this.placeId!)
+    })
+  }
+
+  ionViewWillEnter() {
+    this.placesStore.onePlace$.subscribe({
+      next: (place) => {
+        if(place) {
+          this.currentPlace = place;   
+          this.isBookable = place.userId !== this.authService.userId;
+        }
+      }
     })
   }
 
@@ -41,12 +65,14 @@ export class PlaceDetailsPage implements OnInit {
         {
           text: 'Select Date',
           handler: () => {
+            this.selectedMode = 'select';
             this.onOpenModal();
           },
         },
         {
           text: 'Random Date',
           handler: () => {
+            this.selectedMode = 'random';
             this.onOpenModal();
           },
         },
@@ -64,21 +90,37 @@ export class PlaceDetailsPage implements OnInit {
   onOpenModal() {
     this.modalCtrl.create({
       component: CreateBookingComponent, 
-      componentProps: {selectedPlace: this.place}
+      componentProps: { selectedPlace: this.currentPlace, selectedMode: this.selectedMode }
     })
     .then(modalEl => {
       modalEl.present();
       // on didDismiss é uma outra promise que retorna os dados modal, podemos encadear outro "then" para usar
       return modalEl.onDidDismiss();
     }).then(resultData => {
-      console.log('Usando os dados do modal')
-      console.log(resultData.data, resultData.role);
+      
       if(resultData.role === 'confirm') {
-        console.log('BOOKED!');
+
+        this.loadingCtrl.create({
+          message: 'Creating...',
+
+        }).then(loadingEl => {
+          loadingEl.present()
+          
+          const data = {
+            ...resultData.data,
+            placeId: this.placeId,
+            userId: this.authService.userId
+          }
+  
+          this.bookingService.createBooking(data)
+          return loadingEl.dismiss();
+        })
+        
+        
       } else {
         console.log('CANCELLED!');
       }
-    });
+    })
 
   }
 }

@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { IonicModule } from "@ionic/angular";
 import { CreateBookingComponent } from "src/app/bookings/create-booking/create-booking.component";
 import { PlaceDetailsPageRoutingModule } from "./place-details-routing.module";
@@ -11,8 +11,9 @@ import { PlaceDetailsPage } from "./place-details.page";
     CommonModule,
     FormsModule,
     IonicModule,
-    PlaceDetailsPageRoutingModule
-  ],
+    PlaceDetailsPageRoutingModule,
+    ReactiveFormsModule
+],
   declarations: [PlaceDetailsPage, CreateBookingComponent]
 })
 export class PlaceDetailsPageModule {}

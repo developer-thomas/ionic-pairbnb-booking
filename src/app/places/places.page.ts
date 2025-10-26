@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PlacesService } from './places.service';
 
 @Component({
   selector: 'app-places',
@@ -8,9 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PlacesPage implements OnInit {
 
-  constructor() { }
+  constructor(
+    private placesService: PlacesService
+  ) { }
 
   ngOnInit() {
+    this.placesService.triggerPlaces()
   }
 
 }

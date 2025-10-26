@@ -21,33 +21,44 @@
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
-        <ion-card class="ion-padding">
-          <ion-card-header>
-            <ion-card-title>{{ loadedPlaces[0].title }}</ion-card-title>
-            <ion-card-subtitle>{{ loadedPlaces[0].price  | currency }}</ion-card-subtitle>
-          </ion-card-header>
+        
+        <div *ngIf="places$ | async as place; else emptyPlace" >
+          <ion-card class="ion-padding">
+            
+            <ion-card-header>
+              <ion-card-title>{{ place[0]?.title }}</ion-card-title>
+              <ion-card-subtitle>{{ place[0]?.price  | currency }}</ion-card-subtitle>
+            </ion-card-header>
+            
+
+            <ion-img [src]= place[0]?.imageUrl></ion-img>
+            <ion-card-content>
+              <p>{{ place[0]?.description }}</p>
+            </ion-card-content>
+            <ion-button
+              [routerLink]="['/places/discover', place[0]?.id]"
+              routerDirection="forward"
+              fill="clear"
+              color="primary"
+            >
+              More
+            </ion-button>
+          </ion-card>
+         
+        </div>
+          <ng-template #emptyPlace class="ion-text-center">
+            <ion-text>There are no bookable places right now, please come back later.</ion-text>
+          </ng-template>
       
-          <ion-img [src]="loadedPlaces[0].imageUrl"></ion-img>
-          <ion-card-content>
-            <p>{{ loadedPlaces[0].description }}</p>
-          </ion-card-content>
-          <ion-button
-            [routerLink]="['/places/discover', loadedPlaces[0].id]"
-            routerDirection="forward"
-            fill="clear"
-            color="primary"
-          >
-            More
-          </ion-button>
-        </ion-card>
       </ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" >
-        <cdk-virtual-scroll-viewport itemSize="56" class="viewport">
+        <div *ngIf="places$ | async as place">
+          @for(place of place.slice(1); track $index) {
             <ion-list>
-              <ion-item *cdkVirtualFor="let place of slicedLoadedPlaces">
+              <ion-item>
                 <ion-thumbnail slot="start">
                   <img alt="Silhouette of mountains" [src]="place.imageUrl"/>
                 </ion-thumbnail>
@@ -60,9 +71,15 @@
                 </ion-button>
               </ion-item>
             </ion-list>
-        </cdk-virtual-scroll-viewport>
-        
-      </ion-col>
+          } @empty {
+            <div>
+              <p>There's no available places yet.</p>
+            </div>
+          }
+        </div>
+       
+      
+        </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>

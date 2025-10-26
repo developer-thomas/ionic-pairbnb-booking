@@ -1,23 +1,93 @@
-import { Injectable } from '@angular/core';
+import { DestroyRef, Injectable } from '@angular/core';
 import { Place } from './models/places.model';
+import { AuthService } from '../auth/auth.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { PlacesStore } from './discover/store/places.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+export interface PlaceData {
+  availableFrom: string,
+  availableTo: string,
+  description: string, 
+  imageUrl: string, 
+  price: number,
+  title: string, 
+  userId: string,
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
-  private _places: Place[] = [
-    new Place('p1', 'Manhattan Mansion', 'In the heart of New York City.', 'https://www.civitatis.com/f/estados-unidos/nueva-york/guia/manhattan-m.jpg', 149.99),
-    new Place('p2', 'L\'Amour Toujours', 'A romantic place in Paris!', 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/31/40/0a/96/caption.jpg?w=900&h=500&s=1', 189.99),
-    new Place('p3', 'The Foggy Palace', 'Not your average city trip!', 'https://thumbs.dreamstime.com/b/fairytale-neuschwanstein-castle-bavaria-germany-world-famous-tourist-attraction-bavarian-alps-new-swanstone-th-90072395.jpg', 99.99),
-  ];
+  private readonly _apiUrl = environment.api;
 
-  constructor() {}
+  // private _places = new BehaviorSubject<Place[]>([]);
+  public places$ = this.placesStore.places$;
+
+  constructor(
+    private authService: AuthService,
+    private httpClient: HttpClient,
+    private placesStore: PlacesStore,
+    private destroyRef: DestroyRef
+  ) {}
+
+  /**
+   * Triga todos os lugares e aloca no store
+   */
+  public triggerPlaces() {
+    return this.httpClient.get<Place[]>(`${this._apiUrl}/places`).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).
+    subscribe({
+      next: (places) => {
+        this.placesStore.setPlaces(places);
+      }
+    })
+  } 
 
   get places() {
-    return [...this._places];
+    return this.places$;
+  }
+  
+  /**
+   * Trigga para pegar um lugar e alocar no store
+   */
+  public getPlace(placeId: number) {
+    return this.httpClient.get<Place>(`${this._apiUrl}/places/${placeId}`).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (place) => {
+        this.placesStore.setOnePlace(place);
+      }
+    })
   }
 
-  getPlace(placeId: string) {
-    return { ...this._places.find(place => place.id === placeId)! };
+  public addPlace(place: Place) {
+    const newPlace = {
+      ...place,
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/31/40/0a/96/caption.jpg?w=900&h=500&s=1',
+      userId: this.authService.userId,
+    };
+
+    return this.httpClient.post<Place>(`${this._apiUrl}/places`, newPlace).subscribe({
+      next: (place) => {
+        this.placesStore.addOnePlace(place);
+      }
+    })
+  }
+
+  public updatePlace(placeId: number, place:Place) {
+    const placeToUpdate = {
+      ...place,
+      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/31/40/0a/96/caption.jpg?w=900&h=500&s=1',
+      userId: this.authService.userId,
+    }
+
+    return this.httpClient.patch<Place>(`${this._apiUrl}/places/${placeId}`, placeToUpdate).subscribe({
+      next: (res) => {
+        this.placesStore.addPlace(res)
+      }
+    })
   }
 }
