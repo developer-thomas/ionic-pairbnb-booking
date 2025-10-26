@@ -1,0 +1,19 @@
+<ion-item>
+  <ion-thumbnail slot="start">
+    <img [src]="offer.imageUrl"/>
+  </ion-thumbnail>
+  <ion-label [routerLink]="['/places/offers', offer.id]"> 
+    <h1>{{ offer.title }} </h1>
+    <div class="offer-details">
+      <ion-label>
+        <ion-icon name="calendar"></ion-icon>
+        <ion-text color="secondary">{{ offer.availableFrom | date: 'MM/dd/yyyy' }}</ion-text>
+      </ion-label>
+      <span>to</span>
+      <ion-label>
+        <ion-icon name="calendar"></ion-icon>
+        <ion-text color="secondary">{{ offer.availableTo | date: 'MM/dd/yyyy' }} </ion-text>
+      </ion-label>
+    </div>
+  </ion-label>
+</ion-item>
