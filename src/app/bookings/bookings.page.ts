@@ -30,7 +30,7 @@ export class BookingsPage implements OnInit {
     this.bookingService.findBookingPerUser(this.authService.userId)
   }
 
-  onCancelBooking(bookingId: string, slidingItem: IonItemSliding) {
+  onCancelBooking(bookingId: number, slidingItem: IonItemSliding) {
     slidingItem.close();
 
     this.bookingService.removeBooking(bookingId);

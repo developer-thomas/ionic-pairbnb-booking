@@ -45,12 +45,15 @@ export class BookingService {
     })
   }
 
-  removeBooking(bookingId: string) {
-    // const bookings = this._userBookings.value;
-
-    // const updatedBookings = bookings.filter(b => b.id !== bookingId);
-
-    // this._userBookings.next([...updatedBookings])
+  removeBooking(bookingId: number) {
+    return this.httpClient.delete(`${this._apiUrl}/bookings/${bookingId}`).subscribe({
+      next: () => {
+        this.bookingsStore.deleteBooking(bookingId)
+        this.snackBarService.sucess('Booking deleted sucessfully.')
+      }, error: (err) => {
+        this.snackBarService.error('Error!', err);
+      }
+    })
   }
 
   findBookingPerUser(userId: number) {

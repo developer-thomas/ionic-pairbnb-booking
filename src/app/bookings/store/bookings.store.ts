@@ -29,6 +29,12 @@ export class BookingsStore {
         this._userBookings.next(bookings)
     }
 
+    deleteBooking(bookingId: number) {
+        const bookings = this._userBookings.value;
+        const newBookings = bookings.filter(b => b.id !== bookingId);
+
+        this._userBookings.next([...newBookings]);
+    }
 
 
 }
