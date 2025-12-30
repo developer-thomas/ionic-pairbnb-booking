@@ -8,7 +8,7 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="start">
-      <ion-menu-button ></ion-menu-button>
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -18,20 +18,9 @@
     <ion-row>
       <ion-col>
         <ion-list>
-          @for(offer of loadedOffers; track offer.id) {
+          @for(offer of userOffers$ | async; track $index) {
             <ion-item-sliding #slidingItem>
-              <ion-item>
-                <ion-thumbnail slot="start">
-                  <img [src]="offer.imageUrl"/>
-                </ion-thumbnail>
-                <ion-label> 
-                  <h2>{{ offer.title }} </h2>
-                  <p> {{ offer.description }} </p>
-                </ion-label>
-                <ion-button fill="clear" [routerLink]="['/places/offers', offer.id]">
-                  <ion-icon name="eye-outline"></ion-icon>
-                </ion-button>
-              </ion-item>
+              <app-offer-item [offer]="offer"></app-offer-item>
               <ion-item-options>
                 <ion-item-option color="primary" (click)="onEdit(offer.id, slidingItem)">
                   <ion-icon name="create-outline"></ion-icon>
