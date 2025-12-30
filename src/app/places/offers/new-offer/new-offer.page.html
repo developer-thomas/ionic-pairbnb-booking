@@ -7,18 +7,99 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-grid>
-    <ion-row class="ion-align-items-end">
-      <ion-col size="4" offset="2">row 1 col 1</ion-col>
-      <ion-col size="4">
-        <ion-card>
-          <ion-card-content>
-            <h1>Tem Column</h1>
-            <p>Row 1 Col 2</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content>
+  <form action="" [formGroup]="offerForm">
+    <ion-grid>
+
+      <!-- Title -->
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item>
+            <ion-input label="Title" labelPlacement="floating" formControlName="title"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <!-- Description -->
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item>
+            <ion-textarea label="Short Description" labelPlacement="floating" rows="3" formControlName="description"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      @if(offerForm.get('description')?.invalid && offerForm.get('description')?.touched) {
+        <ion-row>
+          <ion-col size-sm="8" offset-sm="2">
+            <p>Description must no be longer than 150 characters.</p>
+          </ion-col>
+        </ion-row>
+      }
+      <!-- imageUrl -->
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item>
+            <ion-input label="Image Url" labelPlacement="floating" formControlName="imageUrl" type="text"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <!-- Price -->
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item>
+            <ion-input label="Price" labelPlacement="floating" formControlName="price" type="number"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      
+      <!-- Start Date -->
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item button="true" id="from-datepicker" detail="false">
+            <ion-input [value]="offerForm.controls['dateFrom'].value | date:'dd/MM/yyyy'" label="From" labelPlacement="floating"></ion-input>
+            <ion-popover trigger="from-datepicker" class="popover-datetime" showBackdrop="false">
+              <ng-template>
+                <ion-datetime
+                  min="2019-01-01"
+                  max="2025-12-31"
+                  presentation="date"
+                  formControlName="dateFrom"
+                >
+              </ion-datetime>
+
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <!-- End Date -->
+      <ion-row>
+        <ion-col size-sm="8" offset-sm="2">
+          <ion-item button="true" id="to-datepicker" detail="false">
+            <ion-input [value]="offerForm.controls['dateTo'].value | date:'dd/MM/yyyy'" label="To" labelPlacement="floating"></ion-input>
+            <ion-popover trigger="to-datepicker" class="popover-datetime" showBackdrop="false">
+              <ng-template>
+                <ion-datetime
+                  min="2019-01-01"
+                  max="2025-12-31"
+                  presentation="date"
+                  formControlName="dateTo"
+                >
+              </ion-datetime>
+
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <app-location-pickers (locationPick)="onLocationPick($event)"></app-location-pickers>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-button expand="block" (click)="onSubmit()" [disabled]="!offerForm.valid">Create Offer</ion-button>
+  </form>
 </ion-content>
