@@ -66,7 +66,6 @@ export class PlacesService {
   public addPlace(place: Place) {
     const newPlace = {
       ...place,
-      imageUrl: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/31/40/0a/96/caption.jpg?w=900&h=500&s=1',
       userId: this.authService.userId,
     };
 
@@ -90,4 +89,17 @@ export class PlacesService {
       }
     })
   }
+
+  public listUserOffers() {
+    const userId = this.authService.userId;
+
+    return this.httpClient.get<Place[]>(`${this._apiUrl}/places/user/${userId}`).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (res) => {
+        this.placesStore.setUserOffers(res);
+      }
+    }
+    )
+  } 
 }
