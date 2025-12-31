@@ -24,12 +24,10 @@ export class DiscoverPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.placesService.triggerPlaces()
+    this.placesService.triggerPlaces();
   }
 
-
   onSegmentChange(event: CustomEvent<SegmentChangeEventDetail>) {
-
     const selectedValue = event.detail.value;
 
     if(selectedValue === "all") {

@@ -57,14 +57,14 @@
       <ion-row>
         <ion-col size-sm="8" offset-sm="2">
           <ion-item button="true" id="from-datepicker" detail="false">
-            <ion-input [value]="offerForm.controls['dateFrom'].value | date:'dd/MM/yyyy'" label="From" labelPlacement="floating"></ion-input>
+            <ion-input [value]="offerForm.controls['availableFrom'].value | date:'dd/MM/yyyy'" label="From" labelPlacement="floating"></ion-input>
             <ion-popover trigger="from-datepicker" class="popover-datetime" showBackdrop="false">
               <ng-template>
                 <ion-datetime
                   min="2019-01-01"
                   max="2025-12-31"
                   presentation="date"
-                  formControlName="dateFrom"
+                  formControlName="availableFrom"
                 >
               </ion-datetime>
 
@@ -78,14 +78,14 @@
       <ion-row>
         <ion-col size-sm="8" offset-sm="2">
           <ion-item button="true" id="to-datepicker" detail="false">
-            <ion-input [value]="offerForm.controls['dateTo'].value | date:'dd/MM/yyyy'" label="To" labelPlacement="floating"></ion-input>
+            <ion-input [value]="offerForm.controls['availableTo'].value | date:'dd/MM/yyyy'" label="To" labelPlacement="floating"></ion-input>
             <ion-popover trigger="to-datepicker" class="popover-datetime" showBackdrop="false">
               <ng-template>
                 <ion-datetime
                   min="2019-01-01"
                   max="2025-12-31"
                   presentation="date"
-                  formControlName="dateTo"
+                  formControlName="availableTo"
                 >
               </ion-datetime>
 

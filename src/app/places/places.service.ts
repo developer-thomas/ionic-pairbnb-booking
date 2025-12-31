@@ -57,7 +57,7 @@ export class PlacesService {
     return this.httpClient.get<Place>(`${this._apiUrl}/places/${placeId}`).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: (place) => {
+      next: (place: Place) => {
         this.placesStore.setOnePlace(place);
       }
     })

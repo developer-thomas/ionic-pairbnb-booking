@@ -24,8 +24,8 @@ export class NewOfferPage implements OnInit {
       description: ['', [Validators.required, Validators.maxLength(150)]],
       imageUrl: ['', [Validators.required]],
       price: ['', [Validators.required, Validators.min(1)]],
-      dateFrom: ['', [Validators.required]],
-      dateTo: ['', [Validators.required]],
+      availableFrom: ['', [Validators.required]],
+      availableTo: ['', [Validators.required]],
       location: ['', [Validators.required]],
     });
   }
@@ -38,12 +38,12 @@ export class NewOfferPage implements OnInit {
       return;
     }
 
-    const { dateFrom, dateTo } = this.offerForm.value;
+    const { availableFrom, availableTo } = this.offerForm.value;
     
     const data = {
       ...this.offerForm.value,
-      dateFrom: new Date(dateFrom),
-      dateTo: new Date(dateTo),
+      availableFrom: new Date(availableFrom),
+      availableTo: new Date(availableTo),
     };
     
     this.placesService.addPlace(data);

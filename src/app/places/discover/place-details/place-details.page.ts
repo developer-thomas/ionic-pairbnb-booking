@@ -32,7 +32,7 @@ export class PlaceDetailsPage implements OnInit {
     private loadingCtrl: LoadingController,
     private authService: AuthService,
     private placesStore: PlacesStore
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(paramMap => {
@@ -43,7 +43,7 @@ export class PlaceDetailsPage implements OnInit {
 
       this.placeId = Number(paramMap.get('placeId'));
       
-      this.placesService.getPlace(this.placeId!)
+      this.placesService.getPlace(this.placeId)
     })
   }
 
