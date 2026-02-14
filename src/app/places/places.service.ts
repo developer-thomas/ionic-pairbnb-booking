@@ -102,4 +102,14 @@ export class PlacesService {
     }
     )
   } 
+
+  public deletePlace(placeId: number) {
+    return this.httpClient.delete(`${this._apiUrl}/places/${placeId}`).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: (res) => {
+        this.placesStore.removePlace(placeId);
+      }
+    })
+  }
 }

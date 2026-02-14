@@ -1,6 +1,6 @@
 import { DestroyRef, Injectable } from '@angular/core';
 import { Booking } from './models/booking.model';
-import { BehaviorSubject, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { BookingsStore } from './store/bookings.store';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';

@@ -25,6 +25,9 @@
                 <ion-item-option color="primary" (click)="onEdit(offer.id, slidingItem)">
                   <ion-icon name="create-outline"></ion-icon>
                 </ion-item-option>
+                <ion-item-option color="danger" (click)="onDelete(offer.id, slidingItem)">
+                  <ion-icon name="trash"></ion-icon>
+                </ion-item-option>
               </ion-item-options>
             </ion-item-sliding>
           }

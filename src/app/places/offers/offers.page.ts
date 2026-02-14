@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PlacesService } from '../places.service';
 import { Place } from '../models/places.model';
 import { Router } from '@angular/router';
-import { IonItemSliding } from '@ionic/angular'; 
+import { AlertController, IonItemSliding } from '@ionic/angular'; 
 import { PlacesStore } from '../discover/store/places.store';
 
 @Component({
@@ -19,7 +19,8 @@ export class OffersPage implements OnInit {
   constructor(
     private placesService: PlacesService,
     private router: Router,
-    private placesStore: PlacesStore
+    private placesStore: PlacesStore,
+    private alertCtrl: AlertController
   ) { }
 
 
@@ -27,6 +28,9 @@ export class OffersPage implements OnInit {
     this.triggerUserOffers()
   }
 
+  ionViewWillEnter() {
+    this.triggerUserOffers();
+  }
 
   private triggerUserOffers() {
     this.placesService.listUserOffers();
@@ -36,4 +40,24 @@ export class OffersPage implements OnInit {
     slidingItem.close();
     this.router.navigate(['/places/offers/edit', offerId]);
   }
+  
+  async onDelete(offerId: number, slidingItem: IonItemSliding) {
+    slidingItem.close();
+
+    const alert = await this.alertCtrl.create({
+      header: 'Delete',
+      message: 'Would you like to delete this offer?',
+      buttons: [
+        { text: 'Yes', role: 'destructive', handler: () => this.deleteOffer(offerId) },
+        { text: 'No', role: 'cancel' }
+      ]
+    })
+
+    await alert.present();
+  }
+
+  deleteOffer(offerId: number) {
+    this.placesService.deletePlace(offerId);
+  }
+  
 }

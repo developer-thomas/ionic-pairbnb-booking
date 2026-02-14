@@ -7,7 +7,8 @@ import { CreateBookingComponent } from 'src/app/bookings/create-booking/create-b
 import { BookingService } from 'src/app/bookings/booking.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { PlacesStore } from '../store/places.store';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { MapModalComponent } from 'src/app/shared/components/map-modal/map-modal.component';
 
 @Component({
   selector: 'app-place-details',
@@ -121,6 +122,19 @@ export class PlaceDetailsPage implements OnInit {
         console.log('CANCELLED!');
       }
     })
+  }
 
+  onShowFullMap() {
+    this.modalCtrl.create({
+      component: MapModalComponent,
+      componentProps: {
+        center: { lat: this.currentPlace.placeLocation?.lat, lng: this.currentPlace.placeLocation?.lng },
+        selectable: false,
+        closeButtonText: 'Close',
+        title: this.currentPlace.title
+      }
+    }).then(modalEl => {
+      modalEl.present();
+    })
   }
 }
